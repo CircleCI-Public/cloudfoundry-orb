@@ -52,6 +52,21 @@ function setup {
 }
 
 
+@test "Job: push job expands properly" {
+  # given
+  process_config_with test/inputs/job-push.yml
+
+  # when
+  assert_jq_match '.jobs | length' 1
+  assert_jq_match '.jobs["cloudfoundry/push"].steps | length' 4
+  assert_jq_match '.jobs["cloudfoundry/push"].steps[0]' "checkout"
+  assert_jq_match '.jobs["cloudfoundry/push"].steps[1].attach_workspace.at' '/tmp'
+  assert_jq_match '.jobs["cloudfoundry/push"].steps[2].run.name' 'Setup CF CLI'
+  assert_jq_match '.jobs["cloudfoundry/push"].steps[3].run.name' 'Cloud Foundry Push'
+
+}
+
+
 
 
 

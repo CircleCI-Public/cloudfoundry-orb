@@ -1,18 +1,71 @@
 version: 2.1
 description: "Aggregates list of specified pattern to  make browsing artifacts easier. Printing them as an HTML index."
 jobs:
-  blue_green:
-    description: Execute a blue/green deploy  in a single job. Expects either build-steps or workspace_path for assets to deploy.
+  push:
+    description: Execute a simple push in a single job. Expects either build_steps or workspace_path for assets to deploy.
     parameters:
-      build-steps:
+      build_steps:
         type: steps
         default: []
         description: "Steps to generate artifacts. Alternately provide `workspace_path`"
       workspace_path:
         type: string
         default: ''
-        description: "The key of a workflow workspace which contains artifact. Alternately provide `build-steps`"
-      validate-steps:
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
+      # to pass to commands
+      endpoint:
+        type: string
+        description: The domain of the Cloud FOundry runtime API endpoint. Defaults to https://api.run.pivotal.io
+        default: https://api.run.pivotal.io
+      org:
+        type: string
+        description: Cloud Foundry Org to target
+      space:
+        type: string
+        description: Cloud Foundry space to target
+      appname:
+        type: string
+        description: App Name
+      manifest:
+        type: string
+        description: The Cloud Foundry manifest for this environment
+      package:
+        type: string
+        description: path to the asset/package to push
+    steps:
+      - checkout
+      - when:
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
+      - when:
+          condition: <<parameters.workspace_path>> 
+          steps: 
+            - attach_workspace:
+                at: <<parameters.workspace_path>> 
+      - install:
+          endpoint: <<parameters.endpoint>>
+          org: <<parameters.org>>
+          space: <<parameters.space>>
+      - push:
+          appname: <<parameters.appname>>
+          manifest: <<parameters.manifest>>
+          package: <<parameters.package>>
+    docker:
+    - image: circleci/node:10
+
+
+  blue_green:
+    description: Execute a blue/green deploy  in a single job. Expects either build_steps or workspace_path for assets to deploy.
+    parameters:
+      build_steps:
+        type: steps
+        default: []
+        description: "Steps to generate artifacts. Alternately provide `workspace_path`"
+      workspace_path:
+        type: string
+        default: ''
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run between the dark and live deployments."
@@ -50,8 +103,8 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build-steps>> 
-          steps: << parameters.build-steps >>
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
       - when:
           condition: <<parameters.workspace_path>> 
           steps: 
@@ -68,8 +121,8 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
           domain: <<parameters.domain>>
@@ -78,17 +131,17 @@ jobs:
     - image: circleci/node:10
 
   dark_deploy:
-    description: Execute a dark (blue) deploy  in a single job. Expects either build-steps or workspace_path for assets to deploy.
+    description: Execute a dark (blue) deploy  in a single job. Expects either build_steps or workspace_path for assets to deploy.
     parameters:
-      build-steps:
+      build_steps:
         type: steps
         default: []
         description: "Steps to generate artifacts. Alternately provide `workspace_path`"
       workspace_path:
         type: string
         default: ''
-        description: "The key of a workflow workspace which contains artifact. Alternately provide `build-steps`"
-      validate-steps:
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run between the dark and live deployments."
@@ -122,8 +175,8 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build-steps>> 
-          steps: << parameters.build-steps >>
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
       - when:
           condition: <<parameters.workspace_path>> 
           steps: 
@@ -140,14 +193,16 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
     docker:
     - image: circleci/node:10
+
+
   live_deploy:
     description: Execute final URL remap and application name cleanup.
     parameters:
-      validate-steps:
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run before remapping URLs."
@@ -177,8 +232,8 @@ jobs:
           org: <<parameters.org>>
           space: <<parameters.space>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
           domain: <<parameters.domain>>
@@ -213,6 +268,31 @@ commands:
             cf api <<parameters.endpoint>>
             cf auth $CF_USERNAME $CF_PASSWORD
             cf target -o <<parameters.org>> -s <<parameters.space>>
+
+  push:
+    parameters:
+      appname:
+        type: string
+        description: App Name
+      manifest:
+        type: string
+        description: The Cloud Foundry manifest for this environment
+      package:
+        type: string
+        description: path to the asset/package to push
+    steps:
+      - run:
+          name: Cloud Foundry Push
+          command: |
+            #push no start so we can set envars
+            cf push --no-start <<parameters.appname>> -f <<parameters.manifest>> -p <<parameters.package>>
+            cf set-env <<parameters.appname>>-dark CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}
+            cf set-env <<parameters.appname>>-dark CIRCLE_SHA1 ${CIRCLE_SHA1}
+            cf set-env <<parameters.appname>>-dark CIRCLE_WORKFLOW_ID ${CIRCLE_WORKFLOW_ID}
+            cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_USERNAME ${CIRCLE_PROJECT_USERNAME}
+            cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_REPONAME ${CIRCLE_PROJECT_REPONAME}
+            #now start
+            cf start <<parameters.appname>>
 
 
   dark_deploy:
