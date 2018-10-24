@@ -1,0 +1,25 @@
+parameters:
+  appname:
+    type: string
+    description: App Name
+  domain:
+    type: string
+    description: Cloud Foundry domain (a "dark" sub-domain will be used on this.)
+  live_subdomain:
+    type: string
+    description: Cloud Foundry live subdomain to prefix domain (i.e. <live_subdomain>.<domain>, defaults to "wwww")
+    default: www
+steps:
+  - run:
+      name: Cloud Foundry - Re-route live Domain
+      command: |
+        # Send "real" url to new version
+        cf map-route <<parameters.appname>>-dark <<parameters.domain>> -n <<parameters.live_subdomain>>
+        # Stop sending traffic to previous version
+        cf unmap-route <<parameters.appname>> <<parameters.domain>> -n <<parameters.live_subdomain>>
+        # stop previous version
+        cf stop <<parameters.appname>>
+        # delete previous version
+        cf delete <<parameters.appname>> -f
+        # Switch name of "dark" version to claim correct name
+        cf rename <<parameters.appname>>-dark <<parameters.appname>>

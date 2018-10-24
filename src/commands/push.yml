@@ -1,0 +1,23 @@
+parameters:
+  appname:
+    type: string
+    description: App Name
+  manifest:
+    type: string
+    description: The Cloud Foundry manifest for this environment
+  package:
+    type: string
+    description: path to the asset/package to push
+steps:
+  - run:
+      name: Cloud Foundry Push
+      command: |
+        #push no start so we can set envars
+        cf push --no-start <<parameters.appname>> -f <<parameters.manifest>> -p <<parameters.package>>
+        cf set-env <<parameters.appname>>-dark CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}
+        cf set-env <<parameters.appname>>-dark CIRCLE_SHA1 ${CIRCLE_SHA1}
+        cf set-env <<parameters.appname>>-dark CIRCLE_WORKFLOW_ID ${CIRCLE_WORKFLOW_ID}
+        cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_USERNAME ${CIRCLE_PROJECT_USERNAME}
+        cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_REPONAME ${CIRCLE_PROJECT_REPONAME}
+        #now start
+        cf start <<parameters.appname>>
