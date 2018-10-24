@@ -2,16 +2,16 @@ version: 2.1
 description: "Aggregates list of specified pattern to  make browsing artifacts easier. Printing them as an HTML index."
 jobs:
   push:
-    description: Execute a simple push in a single job. Expects either build-steps or workspace_path for assets to deploy.
+    description: Execute a simple push in a single job. Expects either build_steps or workspace_path for assets to deploy.
     parameters:
-      build-steps:
+      build_steps:
         type: steps
         default: []
         description: "Steps to generate artifacts. Alternately provide `workspace_path`"
       workspace_path:
         type: string
         default: ''
-        description: "The key of a workflow workspace which contains artifact. Alternately provide `build-steps`"
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
       # to pass to commands
       endpoint:
         type: string
@@ -35,8 +35,8 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build-steps>> 
-          steps: << parameters.build-steps >>
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
       - when:
           condition: <<parameters.workspace_path>> 
           steps: 
@@ -55,16 +55,16 @@ jobs:
 
 
   blue_green:
-    description: Execute a blue/green deploy  in a single job. Expects either build-steps or workspace_path for assets to deploy.
+    description: Execute a blue/green deploy  in a single job. Expects either build_steps or workspace_path for assets to deploy.
     parameters:
-      build-steps:
+      build_steps:
         type: steps
         default: []
         description: "Steps to generate artifacts. Alternately provide `workspace_path`"
       workspace_path:
         type: string
         default: ''
-        description: "The key of a workflow workspace which contains artifact. Alternately provide `build-steps`"
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
       validate-steps:
         type: steps
         default: []
@@ -103,8 +103,8 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build-steps>> 
-          steps: << parameters.build-steps >>
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
       - when:
           condition: <<parameters.workspace_path>> 
           steps: 
@@ -131,16 +131,16 @@ jobs:
     - image: circleci/node:10
 
   dark_deploy:
-    description: Execute a dark (blue) deploy  in a single job. Expects either build-steps or workspace_path for assets to deploy.
+    description: Execute a dark (blue) deploy  in a single job. Expects either build_steps or workspace_path for assets to deploy.
     parameters:
-      build-steps:
+      build_steps:
         type: steps
         default: []
         description: "Steps to generate artifacts. Alternately provide `workspace_path`"
       workspace_path:
         type: string
         default: ''
-        description: "The key of a workflow workspace which contains artifact. Alternately provide `build-steps`"
+        description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
       validate-steps:
         type: steps
         default: []
@@ -175,8 +175,8 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build-steps>> 
-          steps: << parameters.build-steps >>
+          condition: <<parameters.build_steps>> 
+          steps: << parameters.build_steps >>
       - when:
           condition: <<parameters.workspace_path>> 
           steps: 
