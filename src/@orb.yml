@@ -65,7 +65,7 @@ jobs:
         type: string
         default: ''
         description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
-      validate-steps:
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run between the dark and live deployments."
@@ -121,8 +121,8 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
           domain: <<parameters.domain>>
@@ -141,7 +141,7 @@ jobs:
         type: string
         default: ''
         description: "The key of a workflow workspace which contains artifact. Alternately provide `build_steps`"
-      validate-steps:
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run between the dark and live deployments."
@@ -193,8 +193,8 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
     docker:
     - image: circleci/node:10
 
@@ -202,7 +202,7 @@ jobs:
   live_deploy:
     description: Execute final URL remap and application name cleanup.
     parameters:
-      validate-steps:
+      validate_steps:
         type: steps
         default: []
         description: "Optional steps to run before remapping URLs."
@@ -232,8 +232,8 @@ jobs:
           org: <<parameters.org>>
           space: <<parameters.space>>
       - when:
-          condition: <<parameters.validate-steps>> 
-          steps: << parameters.validate-steps >>
+          condition: <<parameters.validate_steps>> 
+          steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
           domain: <<parameters.domain>>
