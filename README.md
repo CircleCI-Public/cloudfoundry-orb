@@ -7,7 +7,7 @@ Orb consists of both Job and Commands to simplify your config.yml.  Please see [
 ## Simple Push
 
 ### Using Previous Job assets
-YOu can use the `workspace_path` to consume artifacts created by a previous job.
+You can use the `workspace_path` to consume artifacts created by a previous job.
 
 ```
 version: 2.1
@@ -27,7 +27,7 @@ workflows:
           space: circleci
           workspace_path: /tmp
           manifest: /tmp/cf-manifest.yml
-          package: /tmp/standalone-app.jar 
+          package: /tmp/standalone-app.jar
 
 jobs:
   build:
@@ -54,7 +54,7 @@ workflows:
           build_steps:
           	- run: mvn clean install
           manifest: /tmp/cf-manifest.yml
-          package: /tmp/standalone-app.jar 
+          package: /tmp/standalone-app.jar
 
 ```
 
