@@ -1,5 +1,8 @@
 version: 2.1
-description: "Encapsulates common Cloud Foundry PaaS application activities including simple push and blue/green deployments"
+
+description: |
+  Push and deploy applications to Cloud Foundry
+
 jobs:
   push:
     description: Execute a simple push in a single job. Expects either build_steps or workspace_path for assets to deploy.
@@ -35,13 +38,13 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build_steps>> 
+          condition: <<parameters.build_steps>>
           steps: << parameters.build_steps >>
       - when:
-          condition: <<parameters.workspace_path>> 
-          steps: 
+          condition: <<parameters.workspace_path>>
+          steps:
             - attach_workspace:
-                at: <<parameters.workspace_path>> 
+                at: <<parameters.workspace_path>>
       - install:
           endpoint: <<parameters.endpoint>>
           org: <<parameters.org>>
@@ -103,13 +106,13 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build_steps>> 
+          condition: <<parameters.build_steps>>
           steps: << parameters.build_steps >>
       - when:
-          condition: <<parameters.workspace_path>> 
-          steps: 
+          condition: <<parameters.workspace_path>>
+          steps:
             - attach_workspace:
-                at: <<parameters.workspace_path>> 
+                at: <<parameters.workspace_path>>
       - install:
           endpoint: <<parameters.endpoint>>
           org: <<parameters.org>>
@@ -121,7 +124,7 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate_steps>> 
+          condition: <<parameters.validate_steps>>
           steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
@@ -175,13 +178,13 @@ jobs:
     steps:
       - checkout
       - when:
-          condition: <<parameters.build_steps>> 
+          condition: <<parameters.build_steps>>
           steps: << parameters.build_steps >>
       - when:
-          condition: <<parameters.workspace_path>> 
-          steps: 
+          condition: <<parameters.workspace_path>>
+          steps:
             - attach_workspace:
-                at: <<parameters.workspace_path>> 
+                at: <<parameters.workspace_path>>
       - install:
           endpoint: <<parameters.endpoint>>
           org: <<parameters.org>>
@@ -193,7 +196,7 @@ jobs:
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
       - when:
-          condition: <<parameters.validate_steps>> 
+          condition: <<parameters.validate_steps>>
           steps: << parameters.validate_steps >>
     docker:
     - image: circleci/node:10
@@ -232,7 +235,7 @@ jobs:
           org: <<parameters.org>>
           space: <<parameters.space>>
       - when:
-          condition: <<parameters.validate_steps>> 
+          condition: <<parameters.validate_steps>>
           steps: << parameters.validate_steps >>
       - live_deploy:
           appname: <<parameters.appname>>
