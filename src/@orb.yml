@@ -3,6 +3,97 @@ version: 2.1
 description: |
   Push and deploy applications to Cloud Foundry
 
+examples:
+  push_existing_assets:
+    description: |
+      Deploy with artifacts created in previous CircleCI jobs
+    usage:
+      version: 2.1
+
+      orbs:
+        cloudfoundry: circleci/cloudfoundry@1.0
+
+      workflows:
+        version: 2
+        build-deploy:
+          jobs:
+            - build
+            - cloudfoundry/push:
+                requires:
+                  - build
+                appname: your-app
+                org: your-org
+                space: your-space
+                workspace_path: # path to workspace containing your application assets
+                manifest: # path to manifest.yml file
+                package: # path to application package
+
+      jobs:
+        build:
+          machine: true
+          steps:
+            - checkout
+            # your custom build job...
+
+  build_and_push:
+    description: |
+      Build and deploy your application in a single job.
+    usage:
+      version: 2.1
+
+      orbs:
+        cloudfoundry: circleci/cloudfoundry@1.0
+
+      workflows:
+        version: 2
+        build-deploy:
+          jobs:
+            - cloudfoundry/push:
+                appname: your-app
+                org: your-org
+                space: your-space
+                build_steps:
+                  - run: # your build steps
+                  - run: # you can have more, too
+                manifest: # path to manifest.yml file
+                package: # path to application package
+
+  blue_green_deploy:
+    description: |
+      A blue-green deployment with a manual approval step
+    usage:
+      version: 2.1
+
+      orbs:
+        cloudfoundry: circleci/cloudfoundry@1.0
+
+      workflows:
+        build_deploy:
+          jobs:
+            - cloudfoundry/dark_deploy:
+                context: your-context
+                appname: your-app
+                org: your-org
+                space: your-space
+                build_steps:
+                  - run: # your build steps
+                  - run: # you can have more, too
+                manifest: # path to manifest.yml file
+                package: # path to application package
+                domain: your-domain
+            - hold:
+                type: approval
+                requires:
+                  - cloudfoundry/dark_deploy
+            - cloudfoundry/live_deploy:
+                requires:
+                  - hold
+                context: your-context
+                appname: your-app
+                org: your-org
+                space: your-space
+                domain: your-domain
+
 jobs:
   push:
     description: Execute a simple push in a single job. Expects either build_steps or workspace_path for assets to deploy.
