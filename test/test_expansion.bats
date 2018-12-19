@@ -66,11 +66,26 @@ function setup {
 
 }
 
+@test "Job: simple push respects appname" {
+  # given
+  process_config_with test/inputs/job-push.yml
 
+  # when
+  assert_jq_match '.jobs | length' 1
+  assert_jq_match '.jobs["cloudfoundry/push"].steps | length' 4
+  assert_jq_match '.jobs["cloudfoundry/push"].steps[3].run.name' 'Cloud Foundry Push'
+  assert_jq_contains '.jobs["cloudfoundry/push"].steps[3].run.command' 'cf set-env blueskygreenbuilds CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}'
 
+}
 
+@test "Job: BlueGreen push uses dark appname" {
+  # given
+  process_config_with test/inputs/jobs-merged.yml
 
+  # when
+  assert_jq_match '.jobs | length' 1
+  assert_jq_match '.jobs["cloudfoundry/blue_green"].steps | length' 5
+  assert_jq_match '.jobs["cloudfoundry/blue_green"].steps[3].run.name' 'Cloud Foundry Dark Deployment'
+  assert_jq_contains '.jobs["cloudfoundry/blue_green"].steps[3].run.command' 'cf set-env blueskygreenbuilds-dark CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}'
 
-
-
-
+}
