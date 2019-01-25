@@ -1,4 +1,4 @@
-# cloudfoundry-orb
+# Cloudfoundry Orb ![CircleCI status](https://circleci.com/gh/CircleCI-Public/cloudfountry-orb.svg "CircleCI status")
 CircleCI orb supporting deployments to Cloud Foundry runtimes
 
 Orb consists of both Job and Commands to simplify your config.yml.  Please see [samples](samples) for more examples.
