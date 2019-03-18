@@ -282,7 +282,7 @@ jobs:
           org: <<parameters.org>>
           space: <<parameters.space>>
       - dark_deploy:
-          appname: <<parameters.appname>>-dark
+          appname: <<parameters.appname>>
           manifest: <<parameters.manifest>>
           package: <<parameters.package>>
           domain: <<parameters.domain>>
