@@ -360,9 +360,9 @@ commands:
             curl -v -L -o cf-cli_amd64.deb 'https://cli.run.pivotal.io/stable?release=debian64&source=github'
             sudo dpkg -i cf-cli_amd64.deb
             cf -v
-            cf api <<parameters.endpoint>>
-            cf auth $CF_USERNAME $CF_PASSWORD
-            cf target -o <<parameters.org>> -s <<parameters.space>>
+            cf api "<<parameters.endpoint>>"
+            cf auth "$CF_USERNAME" "$CF_PASSWORD"
+            cf target -o "<<parameters.org>>" -s "<<parameters.space>>"
 
   push:
     parameters:
@@ -381,14 +381,14 @@ commands:
           name: Cloud Foundry Push
           command: |
             #push no start so we can set envars
-            cf push --no-start <<parameters.appname>> -f <<parameters.manifest>> <<# parameters.package>> -p <<parameters.package>> <</ parameters.package>>
-            cf set-env <<parameters.appname>> CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}
-            cf set-env <<parameters.appname>> CIRCLE_SHA1 ${CIRCLE_SHA1}
-            cf set-env <<parameters.appname>> CIRCLE_WORKFLOW_ID ${CIRCLE_WORKFLOW_ID}
-            cf set-env <<parameters.appname>> CIRCLE_PROJECT_USERNAME ${CIRCLE_PROJECT_USERNAME}
-            cf set-env <<parameters.appname>> CIRCLE_PROJECT_REPONAME ${CIRCLE_PROJECT_REPONAME}
+            cf push --no-start "<<parameters.appname>>" -f "<<parameters.manifest>>" <<# parameters.package>> -p "<<parameters.package>>" <</ parameters.package>>
+            cf set-env "<<parameters.appname>>" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
+            cf set-env "<<parameters.appname>>" CIRCLE_SHA1 "${CIRCLE_SHA1}"
+            cf set-env "<<parameters.appname>>" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
+            cf set-env "<<parameters.appname>>" CIRCLE_PROJECT_USERNAME "${CIRCLE_PROJECT_USERNAME}"
+            cf set-env "<<parameters.appname>>" CIRCLE_PROJECT_REPONAME "${CIRCLE_PROJECT_REPONAME}"
             #now start
-            cf start <<parameters.appname>>
+            cf start "<<parameters.appname>>"
 
 
   dark_deploy:
@@ -413,17 +413,17 @@ commands:
       - run:
           name: Cloud Foundry Dark Deployment
           command: |
-            cf push --no-start <<parameters.appname>>-dark -f <<parameters.manifest>> -p <<parameters.package>> -n <<parameters.dark_subdomain>> -d <<parameters.domain>>
-            cf set-env <<parameters.appname>>-dark CIRCLE_BUILD_NUM ${CIRCLE_BUILD_NUM}
-            cf set-env <<parameters.appname>>-dark CIRCLE_SHA1 ${CIRCLE_SHA1}
-            cf set-env <<parameters.appname>>-dark CIRCLE_WORKFLOW_ID ${CIRCLE_WORKFLOW_ID}
-            cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_USERNAME ${CIRCLE_PROJECT_USERNAME}
-            cf set-env <<parameters.appname>>-dark CIRCLE_PROJECT_REPONAME ${CIRCLE_PROJECT_REPONAME}
+            cf push --no-start "<<parameters.appname>>-dark" -f "<<parameters.manifest>>" -p "<<parameters.package>>" -n "<<parameters.dark_subdomain>>" -d "<<parameters.domain>>"
+            cf set-env "<<parameters.appname>>-dark" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
+            cf set-env "<<parameters.appname>>-dark" CIRCLE_SHA1 "${CIRCLE_SHA1}"
+            cf set-env "<<parameters.appname>>-dark" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
+            cf set-env "<<parameters.appname>>-dark" CIRCLE_PROJECT_USERNAME "${CIRCLE_PROJECT_USERNAME}"
+            cf set-env "<<parameters.appname>>-dark" CIRCLE_PROJECT_REPONAME "${CIRCLE_PROJECT_REPONAME}"
 
             # Push as "dark" instance (URL in manifest)
-            cf start <<parameters.appname>>-dark
+            cf start "<<parameters.appname>>-dark"
             # Ensure dark route is exclusive to dark app
-            cf unmap-route <<parameters.appname>> <<parameters.domain>> -n <<parameters.dark_subdomain>> || echo "Already exclusive"
+            cf unmap-route "<<parameters.appname>>" "<<parameters.domain>>" -n "<<parameters.dark_subdomain>>" || echo "Already exclusive"
 
 
   live_deploy:
@@ -443,12 +443,12 @@ commands:
           name: Cloud Foundry - Re-route live Domain
           command: |
             # Send "real" url to new version
-            cf map-route <<parameters.appname>>-dark <<parameters.domain>> -n <<parameters.live_subdomain>>
+            cf map-route "<<parameters.appname>>-dark" "<<parameters.domain>>" -n "<<parameters.live_subdomain>>"
             # Stop sending traffic to previous version
-            cf unmap-route <<parameters.appname>> <<parameters.domain>> -n <<parameters.live_subdomain>>
+            cf unmap-route "<<parameters.appname>>" "<<parameters.domain>>" -n "<<parameters.live_subdomain>>"
             # stop previous version
-            cf stop <<parameters.appname>>
+            cf stop "<<parameters.appname>>"
             # delete previous version
-            cf delete <<parameters.appname>> -f
+            cf delete "<<parameters.appname>>" -f
             # Switch name of "dark" version to claim correct name
-            cf rename <<parameters.appname>>-dark <<parameters.appname>>
+            cf rename "<<parameters.appname>>-dark" "<<parameters.appname>>"
