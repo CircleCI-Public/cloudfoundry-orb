@@ -89,3 +89,15 @@ function setup {
   assert_jq_contains '.jobs["cloudfoundry/blue_green"].steps[3].run.command' 'cf set-env "blueskygreenbuilds-dark" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"'
 
 }
+
+@test "Job: blank subdomains are not in commands" {
+  # given
+  process_config_with test/inputs/jobs-separate_no-subdomain.yml
+
+  # when
+  assert_jq_contains '.jobs["cloudfoundry/dark_deploy"].steps[3].run.command' 'cf push --no-start "blueskygreenbuilds-dark" -f "/tmp/cf-manifest.yml" -p "/tmp/standalone-app.jar" -d "dark-blueskygreenbuilds.com"'
+  assert_jq_not_contains '.jobs["cloudfoundry/dark_deploy"].steps[3].run.command' ' -n '
+
+  assert_jq_not_contains '.jobs["cloudfoundry/live_deploy"].steps[1].run.command' ' -n '
+  assert_jq_not_contains '.jobs["cloudfoundry/live_deploy"].steps[1].run.command' ' -n '
+}

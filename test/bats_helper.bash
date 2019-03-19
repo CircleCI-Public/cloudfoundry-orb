@@ -95,4 +95,11 @@ function assert_jq_contains {
 	fi
 }
 
-
+function assert_jq_not_contains {
+	MATCH=$2
+	RES=$(jq -r "$1" ${JSON_PROJECT_CONFIG})
+	if [[ "$RES" == *"$MATCH"* ]];then
+		echo "Unexpected match "'"'"$MATCH"'"'" was found in "'"'"$RES"'"'
+		return 1
+	fi
+}
