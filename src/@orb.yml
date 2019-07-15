@@ -123,6 +123,9 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+      vars:
+        type: string
+        description: Vars file for variable substitution.
       package:
         type: string
         description: path to the package/files to push if not the current directory
@@ -144,6 +147,7 @@ jobs:
       - push:
           appname: <<parameters.appname>>
           manifest: <<parameters.manifest>>
+          vars: <<parameters.vars>>
           package: <<parameters.package>>
     docker:
     - image: circleci/node:10
@@ -181,6 +185,9 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+      vars:
+        type: string
+        description: Vars file for variable substitution.
       package:
         type: string
         description: path to the asset/package to push
@@ -212,6 +219,7 @@ jobs:
       - dark_deploy:
           appname: <<parameters.appname>>
           manifest: <<parameters.manifest>>
+          vars: <<parameters.vars>>
           package: <<parameters.package>>
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
@@ -257,6 +265,9 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+      vars:
+        type: string
+        description: Vars file for variable substitution.
       package:
         type: string
         description: path to the asset/package to push
@@ -284,6 +295,7 @@ jobs:
       - dark_deploy:
           appname: <<parameters.appname>>
           manifest: <<parameters.manifest>>
+          vars: <<parameters.vars>>
           package: <<parameters.package>>
           domain: <<parameters.domain>>
           dark_subdomain: <<parameters.dark_subdomain>>
@@ -372,6 +384,9 @@ commands:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+      vars:
+        type: string
+        description: Vars file for variable substitution.
       package:
         type: string
         description: path to the asset/package to push
@@ -381,7 +396,7 @@ commands:
           name: Cloud Foundry Push
           command: |
             #push no start so we can set envars
-            cf push --no-start "<<parameters.appname>>" -f "<<parameters.manifest>>" <<# parameters.package>> -p "<<parameters.package>>" <</ parameters.package>>
+            cf push --no-start "<<parameters.appname>>" -f "<<parameters.manifest>>" <<# parameters.vars>> --vars-file "<<parameters.vars>>" <</ parameters.vars>> <<# parameters.package>> -p "<<parameters.package>>" <</ parameters.package>>
             cf set-env "<<parameters.appname>>" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
             cf set-env "<<parameters.appname>>" CIRCLE_SHA1 "${CIRCLE_SHA1}"
             cf set-env "<<parameters.appname>>" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
@@ -399,6 +414,9 @@ commands:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+      vars:
+        type: string
+        description: Vars file for variable substitution.
       package:
         type: string
         description: path to the asset/package to push
@@ -413,7 +431,7 @@ commands:
       - run:
           name: Cloud Foundry Dark Deployment
           command: |
-            cf push --no-start "<<parameters.appname>>-dark" -f "<<parameters.manifest>>" -p "<<parameters.package>>"<<# parameters.dark_subdomain>> -n "<<parameters.dark_subdomain>>"<</ parameters.dark_subdomain>> -d "<<parameters.domain>>"
+            cf push --no-start "<<parameters.appname>>-dark" -f "<<parameters.manifest>>"<<# parameters.vars>> --vars-file "<<parameters.vars>>" <</ parameters.vars>>-p "<<parameters.package>>"<<# parameters.dark_subdomain>> -n "<<parameters.dark_subdomain>>"<</ parameters.dark_subdomain>> -d "<<parameters.domain>>"
             cf set-env "<<parameters.appname>>-dark" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
             cf set-env "<<parameters.appname>>-dark" CIRCLE_SHA1 "${CIRCLE_SHA1}"
             cf set-env "<<parameters.appname>>-dark" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
