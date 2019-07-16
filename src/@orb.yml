@@ -123,9 +123,11 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+        default: ""
       vars:
         type: string
         description: Vars file for variable substitution.
+        default: ""
       package:
         type: string
         description: path to the package/files to push if not the current directory
@@ -185,9 +187,11 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+        default: ""
       vars:
         type: string
         description: Vars file for variable substitution.
+        default: ""
       package:
         type: string
         description: path to the asset/package to push
@@ -265,9 +269,11 @@ jobs:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+        default: ""
       vars:
         type: string
         description: Vars file for variable substitution.
+        default: ""
       package:
         type: string
         description: path to the asset/package to push
@@ -384,9 +390,11 @@ commands:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+        default: ""
       vars:
         type: string
         description: Vars file for variable substitution.
+        default: ""
       package:
         type: string
         description: path to the asset/package to push
@@ -414,9 +422,11 @@ commands:
       manifest:
         type: string
         description: The Cloud Foundry manifest for this environment
+        default: ""
       vars:
         type: string
         description: Vars file for variable substitution.
+        default: ""
       package:
         type: string
         description: path to the asset/package to push
