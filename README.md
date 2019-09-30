@@ -1,5 +1,5 @@
 # Cloudfoundry Orb ![CircleCI status](https://circleci.com/gh/CircleCI-Public/cloudfoundry-orb.svg "CircleCI status") [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/circleci/cloudfoundry)](https://circleci.com/orbs/registry/orb/circleci/cloudfoundry) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/CircleCI-Public/cloudfoundry-orb/master/LICENSE) [![CircleCI Community](https://img.shields.io/badge/community-CircleCI%20Discuss-343434.svg)](https://discuss.circleci.com/c/ecosystem/orbs)
-CircleCI orb supporting deployments to Cloud Foundry runtimes
+CircleCI orb supporting deployments to Cloud Foundry runtimes.
 
 Orb consists of both Job and Commands to simplify your config.yml. Please see the [orb registry listing](https://circleci.com/orbs/registry/orb/circleci/cloudfoundry#usage-examples) for more examples.
 
@@ -60,7 +60,7 @@ workflows:
 
 ## Blue/Green Deployments
 
-You can use either `blue_green` to run both as single job, adding any `validation_steps` to run in between.  Alternately you can use `dark_deploy` and `live_deploy` to have more control over the deployment, using approval jobs for instance.
+You can use either `blue_green` to run both as a single job, adding any `validation_steps` to run in between.  Alternatively you can use `dark_deploy` and `live_deploy` to have more control over the deployment, using approval jobs for instance.
 
 In all cases the job expects either a `workspace_path` or `build_steps` along with the required parameters.
 
