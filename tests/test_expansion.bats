@@ -18,7 +18,7 @@ function setup {
 
 @test "Job: individual jobs expands properly" {
   # given
-  process_config_with test/inputs/jobs-separate.yml
+  process_config_with tests/inputs/jobs-separate.yml
 
   # when
   assert_jq_match '.jobs | length' 2
@@ -38,7 +38,7 @@ function setup {
 
 @test "Job: merged expands properly" {
   # given
-  process_config_with test/inputs/jobs-merged.yml
+  process_config_with tests/inputs/jobs-merged.yml
 
   # when
   assert_jq_match '.jobs | length' 1
@@ -54,7 +54,7 @@ function setup {
 
 @test "Job: push job expands properly" {
   # given
-  process_config_with test/inputs/job-push.yml
+  process_config_with tests/inputs/job-push.yml
 
   # when
   assert_jq_match '.jobs | length' 1
@@ -68,7 +68,7 @@ function setup {
 
 @test "Job: simple push respects appname" {
   # given
-  process_config_with test/inputs/job-push.yml
+  process_config_with tests/inputs/job-push.yml
 
   # when
   assert_jq_match '.jobs | length' 1
@@ -80,7 +80,7 @@ function setup {
 
 @test "Job: BlueGreen push uses dark appname" {
   # given
-  process_config_with test/inputs/jobs-merged.yml
+  process_config_with tests/inputs/jobs-merged.yml
 
   # when
   assert_jq_match '.jobs | length' 1
@@ -92,7 +92,7 @@ function setup {
 
 @test "Job: blank subdomains are not in commands" {
   # given
-  process_config_with test/inputs/jobs-separate_no-subdomain.yml
+  process_config_with tests/inputs/jobs-separate_no-subdomain.yml
 
   # when
   assert_jq_contains '.jobs["cloudfoundry/dark_deploy"].steps[3].run.command' 'cf push --no-start "blueskygreenbuilds-dark" -f "/tmp/cf-manifest.yml" -p "/tmp/standalone-app.jar" -d "dark-blueskygreenbuilds.com"'
