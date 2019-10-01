@@ -111,7 +111,6 @@ commands:
             circleci version
             echo "Run circleci help"              
             circleci help
-            mkdir -p ~
             echo -e "token: ${CIRCLECI_API_KEY}\nverbose: false" > ~/.circleci/cli.yml
 
 
