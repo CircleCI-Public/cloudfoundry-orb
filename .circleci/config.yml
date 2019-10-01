@@ -14,7 +14,7 @@ workflows:
 jobs:
   dev-version:
     docker:
-      - image: cimg/base:latest
+      - image: cimg/base:stable
     working_directory: ~/repo
     steps:
       - checkout
@@ -52,7 +52,7 @@ jobs:
 
   publish:
     docker:
-      - image: cimg/base:latest
+      - image: cimg/base:stable
     working_directory: ~/repo
     steps:
       - checkout
@@ -60,8 +60,7 @@ jobs:
       - run:
           name: Grab Commit Info
           command: |
-            curl "https://circleci.com/api/v1.1/project/gh/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BUILD_NUM}?circle-token=${CIRCLECI_API_KEY}" > build_info.txt
-            
+            curl "https://circleci.com/api/v1.1/project/gh/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BUILD_NUM}?circle-token=${CIRCLECI_API_KEY}" > build_info.txt            
       - run:
           name: Promote to prod
           command: |
