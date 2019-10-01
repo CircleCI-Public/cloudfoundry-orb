@@ -1,0 +1,19 @@
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - cloudfoundry/dark_deploy:
+          appname: blueskygreenbuilds
+          org: eddies-org
+          space: circleci
+          workspace_path: /tmp
+          manifest: /tmp/cf-manifest.yml
+          package: /tmp/standalone-app.jar
+          domain: dark-blueskygreenbuilds.com
+          dark_subdomain: ''
+      - cloudfoundry/live_deploy:
+          appname: blueskygreenbuilds
+          org: eddies-org
+          space: circleci
+          domain: blueskygreenbuilds.com
+          live_subdomain: ''
