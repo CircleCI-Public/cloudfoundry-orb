@@ -23,8 +23,8 @@ jobs:
           name: Pack, Validate, and Publish
           command: |
             circleci config pack src/ > packed.yml
-            circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
-            PUBLISH_MESSAGE=`circleci orb publish packed.yml circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1} --token ${CIRCLECI_API_KEY}`
+            circleci orb validate packed.yml
+            PUBLISH_MESSAGE=`circleci orb publish packed.yml circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
             echo $PUBLISH_MESSAGE
             ORB_VERSION=$(echo $PUBLISH_MESSAGE | sed -n 's/Orb `\(.*\)` was published.*/\1/p')
             echo "export ORB_VERSION=\"${ORB_VERSION}\"" >> $BASH_ENV
@@ -111,6 +111,7 @@ commands:
             circleci version
             echo "Run circleci help"              
             circleci help
+            mkdir -p ~/.circleci
             echo -e "token: ${CIRCLECI_API_KEY}\nverbose: false" > ~/.circleci/cli.yml
 
 
