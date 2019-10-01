@@ -3,52 +3,87 @@ version: 2.1
 workflows:
   build-deploy:
     jobs:
-      - test-locally
+      - dev-version
       - publish:
           requires:
-            - test-locally
+            - dev-version
           filters:
             branches:
               only: master
 
 jobs:
-  test-locally:
+  dev-version:
     docker:
-      - image: circleci/node:10
+      - image: cimg/base:latest
     working_directory: ~/repo
     steps:
       - checkout
       - install-circleci
       - run:
-          name: Pack and Validate
+          name: Pack, Validate, and Publish
           command: |
             circleci config pack src/ > packed.yml
             circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
+            PUBLISH_MESSAGE=`circleci orb publish packed.yml circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1} --token ${CIRCLECI_API_KEY}`
+            echo $PUBLISH_MESSAGE
+            ORB_VERSION=$(echo $PUBLISH_MESSAGE | sed -n 's/Orb `\(.*\)` was published.*/\1/p')
+            echo "export ORB_VERSION=\"${ORB_VERSION}\"" >> $BASH_ENV
+            echo $ORB_VERSION
       - install-bats
       - run:
-          name: Inline Tests using BATS
+          name: Test against published dev version using BATS
           command: |
-            bats test
+            export BATS_IMPORT_DEV_ORB="circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1}"
+            bats tests
+      - run:
+          name: Publish Dev version to PR
+          command: |
+            if [ "$CIRCLE_PR_NUMBER" != "" ];then
+              echo "PR_NUMBER is ${CIRCLE_PR_NUMBER}"
+            else
+              CIRCLE_PR_NUMBER=$(echo $CIRCLE_PULL_REQUEST | sed -n 's/.*\/pull\/\([0-9]*\)/\1/p')
+              if [ "$CIRCLE_PR_NUMBER" == "" ];then
+                echo "No pr found, do nothing"
+                exit 0
+              fi
+            fi
+            curl -X POST -u cpe-bot:${GHI_TOKEN} "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/issues/${CIRCLE_PR_NUMBER}/comments" -d "{\"body\":\"Dev version of orb available for testing - \`${ORB_VERSION}\`\"}"
+
 
   publish:
     docker:
-      - image: circleci/node:10
+      - image: cimg/base:latest
     working_directory: ~/repo
     steps:
       - checkout
       - install-circleci
       - run:
-          name: Publish prod
+          name: Grab Commit Info
           command: |
-            circleci config pack src/ > packed.yml
-            circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
-            circleci orb publish packed.yml circleci/cloudfoundry@0.1.${CIRCLE_BUILD_NUM} --token ${CIRCLECI_API_KEY}
-      - install-bats
+            curl "https://circleci.com/api/v1.1/project/gh/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BUILD_NUM}?circle-token=${CIRCLECI_API_KEY}" > build_info.txt
+            
       - run:
-          name: Import Tests using BATS
+          name: Promote to prod
           command: |
-            export BATS_IMPORT_DEV_ORB="circleci/cloudfoundry@0.1.${CIRCLE_BUILD_NUM}"
-            bats test
+            SEMVER_INCREMENT=`jq -r '.subject' build_info.txt | sed -En 's/.*\[semver:(major|minor|patch)\].*/\1/p'`
+            if [ -z ${SEMVER_INCREMENT} ];then
+              echo "Merge commit did not indicate which SemVer increment to make. Please ammend commit with [semver:FOO] where FOO is major, minor, or patch"
+              exit 1
+            fi
+            PUBLISH_MESSAGE=`circleci orb publish promote circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1} ${SEMVER_INCREMENT} --token ${CIRCLECI_API_KEY}`
+            echo $PUBLISH_MESSAGE
+            ORB_VERSION=$(echo $PUBLISH_MESSAGE | sed -n 's/Orb .* was promoted to `\(.*\)`.*/\1/p')
+            echo "export ORB_VERSION=\"${ORB_VERSION}\"" >> $BASH_ENV
+      - run:
+          name: Publish Prod version to PR
+          command: |
+            PR_NUMBER=`jq -r '.subject' build_info.txt | sed -n 's/Merge pull request #\([0-9]*\) from.*/\1/p'`
+            echo "PR_NUMBER is ${PR_NUMBER}"
+            if [ "$PR_NUMBER" == "" ];then
+              echo "No pr found, do nothing"
+              exit 0
+            fi
+            curl -X POST -u cpe-bot:${GHI_TOKEN} "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/issues/${PR_NUMBER}/comments" -d "{\"body\":\"*Production* version of orb available for use - \`${ORB_VERSION}\`\"}"
 
 
 
