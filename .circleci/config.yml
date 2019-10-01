@@ -14,10 +14,11 @@ workflows:
 jobs:
   dev-version:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - checkout
+      - install-circleci
       - run:
           name: Pack, Validate, and Publish
           command: |
@@ -51,10 +52,11 @@ jobs:
 
   publish:
     docker:
-      - image: cimg/base:stable
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
       - checkout
+      - install-circleci
       - run:
           name: Grab Commit Info
           command: |
@@ -99,4 +101,18 @@ commands:
             curl -L https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 -o yq
             chmod a+x yq
             sudo mv yq /usr/local/bin/
+  install-circleci:
+    description: installs the new CIrcleCI CLI with orb support
+    steps:
+      - run: 
+          name: Install CircleCI CLI (the new one)
+          command: |
+            curl https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh --fail --show-error | sudo bash
+            circleci version
+            echo "Run circleci help"              
+            circleci help
+            mkdir -p ~
+            echo -e "token: ${CIRCLECI_API_KEY}\nverbose: false" > ~/.circleci/cli.yml
+
+
 
