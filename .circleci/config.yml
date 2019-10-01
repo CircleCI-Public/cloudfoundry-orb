@@ -18,13 +18,12 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - install-circleci
       - run:
           name: Pack, Validate, and Publish
           command: |
             circleci config pack src/ > packed.yml
-            circleci orb validate packed.yml
-            PUBLISH_MESSAGE=`circleci orb publish packed.yml circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1}
+            circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
+            PUBLISH_MESSAGE=`circleci orb publish packed.yml circleci/cloudfoundry@dev:${CIRCLE_BRANCH}-${CIRCLE_SHA1} --token ${CIRCLECI_API_KEY}`
             echo $PUBLISH_MESSAGE
             ORB_VERSION=$(echo $PUBLISH_MESSAGE | sed -n 's/Orb `\(.*\)` was published.*/\1/p')
             echo "export ORB_VERSION=\"${ORB_VERSION}\"" >> $BASH_ENV
@@ -56,7 +55,6 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - install-circleci
       - run:
           name: Grab Commit Info
           command: |
@@ -101,18 +99,4 @@ commands:
             curl -L https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 -o yq
             chmod a+x yq
             sudo mv yq /usr/local/bin/
-  install-circleci:
-    description: installs the new CIrcleCI CLI with orb support
-    steps:
-      - run: 
-          name: Install CircleCI CLI (the new one)
-          command: |
-            curl https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh --fail --show-error | bash
-            circleci version
-            echo "Run circleci help"              
-            circleci help
-            mkdir -p ~/.circleci
-            echo -e "token: ${CIRCLECI_API_KEY}\nverbose: false" > ~/.circleci/cli.yml
-
-
 
