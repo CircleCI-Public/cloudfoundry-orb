@@ -3,6 +3,15 @@ CircleCI orb supporting deployments to Cloud Foundry runtimes.
 
 Orb consists of both Job and Commands to simplify your config.yml. Please see the [orb registry listing](https://circleci.com/orbs/registry/orb/circleci/cloudfoundry#usage-examples) for more examples.
 
+Table of Contents
+=================
+* [Simple Push](#simple-push)
+  * [Using Previous Job assets](#using-previous-job-assets)
+  * [Building and push in single job](#building-and-push-in-single-job)
+* [Blue/Green Deployments](#bluegreen-deployments)
+  * [Blue Green Deployment with Manual Approval](#blue-green-deployment-with-manual-approval)
+
+
 
 ## Simple Push
 
