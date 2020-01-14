@@ -52,8 +52,8 @@ examples:
                 org: your-org
                 space: your-space
                 build_steps:
-                  - run: # your build steps
-                  - run: # you can have more, too
+                  - run: echo 'your build steps'
+                  - run: echo 'you can have more, too'
                 manifest: # path to manifest.yml file
                 package: # path to application package
 
@@ -75,11 +75,11 @@ examples:
                 org: your-org
                 space: your-space
                 build_steps:
-                  - run: # your build steps
-                  - run: # you can have more, too
+                  - run: echo 'your build steps'
+                  - run: echo 'you can have more, too'
                 validate_steps:
-                  - run: # your validation steps
-                  - run: # you can also have more of these
+                  - run: echo 'your validation steps'
+                  - run: echo 'you can also have more of these'
                 manifest: # path to manifest.yml file
                 package: # path to application package
                 domain: your-domain
