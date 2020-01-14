@@ -12,10 +12,9 @@ examples:
       version: 2.1
 
       orbs:
-        cloudfoundry: circleci/cloudfoundry@1.0
+        cloudfoundry: circleci/cloudfoundry@x.y
 
       workflows:
-        version: 2
         build-deploy:
           jobs:
             - build
@@ -43,10 +42,9 @@ examples:
       version: 2.1
 
       orbs:
-        cloudfoundry: circleci/cloudfoundry@1.0
+        cloudfoundry: circleci/cloudfoundry@x.y
 
       workflows:
-        version: 2
         build-deploy:
           jobs:
             - cloudfoundry/push:
@@ -54,45 +52,36 @@ examples:
                 org: your-org
                 space: your-space
                 build_steps:
-                  - run: # your build steps
-                  - run: # you can have more, too
+                  - run: echo 'your build steps'
+                  - run: echo 'you can have more, too'
                 manifest: # path to manifest.yml file
                 package: # path to application package
 
   blue_green_deploy:
     description: |
-      A blue-green deployment with a manual approval step
+      A blue-green deployment
     usage:
       version: 2.1
 
       orbs:
-        cloudfoundry: circleci/cloudfoundry@1.0
+        cloudfoundry: circleci/cloudfoundry@x.y
 
       workflows:
         build_deploy:
           jobs:
-            - cloudfoundry/dark_deploy:
+            - cloudfoundry/blue_green:
                 context: your-context
                 appname: your-app
                 org: your-org
                 space: your-space
                 build_steps:
-                  - run: # your build steps
-                  - run: # you can have more, too
+                  - run: echo 'your build steps'
+                  - run: echo 'you can have more, too'
+                validate_steps:
+                  - run: echo 'your validation steps'
+                  - run: echo 'you can also have more of these'
                 manifest: # path to manifest.yml file
                 package: # path to application package
-                domain: your-domain
-            - hold:
-                type: approval
-                requires:
-                  - cloudfoundry/dark_deploy
-            - cloudfoundry/live_deploy:
-                requires:
-                  - hold
-                context: your-context
-                appname: your-app
-                org: your-org
-                space: your-space
                 domain: your-domain
 
 jobs:
