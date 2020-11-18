@@ -24,7 +24,7 @@ workflows:
           exclude: SC2148,SC2001,SC1091,SC2086,SC2116,SC2046,SC2005,SC2002
           shell: sh
       - bats/run:
-          path: ./tests
+          path: ./test
       - orb-tools/pack:
           use-orb-pack: true
       - hold-for-dev-publish:

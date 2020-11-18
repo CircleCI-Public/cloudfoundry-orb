@@ -14,7 +14,7 @@ parameters:
     type: steps
   endpoint:
     default: https://api.run.pivotal.io
-    description: > 
+    description: >
       The domain of the Cloud Foundry runtime API endpoint. Defaults to https://api.run.pivotal.io
     type: string
   manifest:
@@ -37,7 +37,7 @@ parameters:
     type: string
   workspace_path:
     default: ''
-    description: > 
+    description: >
       The key of a workflow workspace which contains artifact. Alternately provide `build_steps`
     type: string
 steps:
