@@ -1,0 +1,18 @@
+description: Build and deploy your application in a single job.
+
+usage:
+  orbs:
+    cloudfoundry: circleci/cloudfoundry@x.y
+  version: 2.1
+  workflows:
+    build-deploy:
+      jobs:
+        - cloudfoundry/push:
+            appname: your-app
+            build_steps:
+              - run: echo 'your build steps'
+              - run: echo 'you can have more, too'
+            manifest: null
+            org: your-org
+            package: null
+            space: your-space

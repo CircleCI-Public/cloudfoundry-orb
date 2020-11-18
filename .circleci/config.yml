@@ -1,83 +1,62 @@
-
 version: 2.1
+
+orbs:
+  orb-tools: circleci/orb-tools@10
+  cloudfoundry: circleci/cloudfoundry@<<pipeline.parameters.dev-orb-version>>
+
+parameters:
+  run-integration-tests:
+    type: boolean
+    default: false
+  dev-orb-version:
+    type: string
+    default: "dev:alpha"
+
+jobs: []
+
 workflows:
-  build-deploy:
+  test-pack:
+    unless: << pipeline.parameters.run-integration-tests >>
     jobs:
-      - test-locally
-      - publish:
+      - orb-tools/lint
+      - shellcheck/check:
+          dir: ./src/scripts
+          exclude: SC2148,SC2001,SC1091,SC2086,SC2116,SC2046,SC2005,SC2002
+          shell: sh
+      - bats/run:
+          path: ./tests
+      - orb-tools/pack:
+          use-orb-pack: true
+      - hold-for-dev-publish:
+          type: approval
           requires:
-            - test-locally
+            - orb-tools/lint
+            - orb-tools/pack
+            - bats/run
+            - shellcheck/check
+      - orb-tools/publish-dev:
+          orb-name: circleci/cloudfoundry
+          context: orb-publishing
+          requires:
+            - hold-for-dev-publish
+
+      - orb-tools/trigger-integration-tests-workflow:
+          name: trigger-integration-dev
+          context: orb-publishing
+          requires:
+            - orb-tools/publish-dev
+
+  integration-test_deploy:
+    when: << pipeline.parameters.run-integration-tests >>
+
+      - orb-tools/dev-promote-prod-from-commit-subject:
+          orb-name: circleci/cloudfoundry
+          context: orb-publishing
+          add-pr-comment: true
+          bot-token-variable: GHI_TOKEN
+          bot-user: cpe-bot
+          fail-if-semver-not-indicated: true
+          publish-version-tag: false
           filters:
             branches:
               only: master
-
-jobs:
-  test-locally:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - install-circleci
-      - run:
-          name: Pack and Validate
-          command: |
-            circleci config pack src/ > packed.yml
-            circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
-      - install-bats
-      - run:
-          name: Inline Tests using BATS
-          command: |
-            bats test
-
-  publish:
-    docker:
-      - image: circleci/node:10
-    working_directory: ~/repo
-    steps:
-      - checkout
-      - install-circleci
-      - run:
-          name: Publish prod
-          command: |
-            circleci config pack src/ > packed.yml
-            circleci orb validate packed.yml --token ${CIRCLECI_API_KEY}
-            circleci orb publish packed.yml circleci/cloudfoundry@0.1.${CIRCLE_BUILD_NUM} --token ${CIRCLECI_API_KEY}
-      - install-bats
-      - run:
-          name: Import Tests using BATS
-          command: |
-            export BATS_IMPORT_DEV_ORB="circleci/cloudfoundry@0.1.${CIRCLE_BUILD_NUM}"
-            bats test
-
-
-
-commands:
-  install-bats:
-    description: installs the BATS bash testing tool
-    steps:
-      - run:      
-          name: Install BATS (bash testing)
-          command: |
-            cd /tmp && git clone https://github.com/bats-core/bats-core.git && cd bats-core
-            sudo ./install.sh /usr/local
-      - run:
-          name: Install YQ
-          command: |
-            curl -L https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 -o yq
-            chmod a+x yq
-            sudo mv yq /usr/local/bin/
-  install-circleci:
-    description: installs the new CIrcleCI CLI with orb support
-    steps:
-      - run: 
-          name: Install CircleCI CLI (the new one)
-          command: |
-            curl https://raw.githubusercontent.com/CircleCI-Public/circleci-cli/master/install.sh --fail --show-error | sudo bash
-            circleci version
-            echo "Run circleci help"              
-            circleci help
-            echo -e "token: ${CIRCLECI_API_KEY}\nverbose: false" > ~/.circleci/cli.yml
-
-
-

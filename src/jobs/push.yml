@@ -1,0 +1,61 @@
+description: >
+  Execute a simple push in a single job. Expects either build_steps or
+  workspace_path for assets to deploy.
+docker:
+  - image: circleci/node:10
+parameters:
+  appname:
+    description: App Name
+    type: string
+  build_steps:
+    default: []
+    description: >
+      Steps to generate application package or files. Alternately provide `workspace_path`
+    type: steps
+  endpoint:
+    default: https://api.run.pivotal.io
+    description: > 
+      The domain of the Cloud Foundry runtime API endpoint. Defaults to https://api.run.pivotal.io
+    type: string
+  manifest:
+    default: ''
+    description: The Cloud Foundry manifest for this environment
+    type: string
+  org:
+    description: Cloud Foundry 'Org' to target
+    type: string
+  package:
+    default: ''
+    description: path to the package/files to push if not the current directory
+    type: string
+  space:
+    description: Cloud Foundry 'Space' to target
+    type: string
+  vars:
+    default: ''
+    description: Vars file for variable substitution.
+    type: string
+  workspace_path:
+    default: ''
+    description: > 
+      The key of a workflow workspace which contains artifact. Alternately provide `build_steps`
+    type: string
+steps:
+  - checkout
+  - when:
+      condition: <<parameters.build_steps>>
+      steps: << parameters.build_steps >>
+  - when:
+      condition: <<parameters.workspace_path>>
+      steps:
+      - attach_workspace:
+          at: <<parameters.workspace_path>>
+  - install:
+      endpoint: <<parameters.endpoint>>
+      org: <<parameters.org>>
+      space: <<parameters.space>>
+  - push:
+      appname: <<parameters.appname>>
+      manifest: <<parameters.manifest>>
+      package: <<parameters.package>>
+      vars: <<parameters.vars>>
