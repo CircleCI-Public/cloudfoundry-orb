@@ -3,6 +3,8 @@ version: 2.1
 orbs:
   orb-tools: circleci/orb-tools@10
   cloudfoundry: circleci/cloudfoundry@<<pipeline.parameters.dev-orb-version>>
+  bats: circleci/bats@1.0
+  shellcheck: circleci/shellcheck@2.0
 
 parameters:
   run-integration-tests:
