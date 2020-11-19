@@ -1,11 +1,12 @@
 Setup_Args() {
       if [ -n "$DEPLOY_VARS" ]; then
-            $ARGS_VARS="--vars-file $DD_VARS"
+            ARGS_VARS="--vars-file $DD_VARS"
       fi
       if [ -n "$DEPLOY_PACKAGE" ]; then
-            $ARGS_PACKAGE="-n $DEPLOY_PACKAGE"
+            ARGS_PACKAGE="-n $DEPLOY_PACKAGE"
       fi
 }
+Setup_Args
 
 cf push --no-start "$DEPLOY_APPNAME" -f "$DEPLOY_MANIFEST" "$ARGS_VARS" "$ARGS_PACKAGE"
 

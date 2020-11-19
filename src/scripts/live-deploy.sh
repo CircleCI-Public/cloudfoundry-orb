@@ -1,8 +1,9 @@
 Setup_Args() {
       if [ -n "$LD_SUBDOMAIN" ]; then
-            $ARGS_SUBDOMAIN="-n $LD_SUBDOMAIN"
+            ARGS_SUBDOMAIN="-n $LD_SUBDOMAIN"
       fi
 }
+Setup_Args
 
 # Send "real" url to new version
 cf map-route "$LD_APPNAME-dark" "$LD_DOMAIN" "$ARGS_SUBDOMAIN"

@@ -1,12 +1,11 @@
 Setup_Args() {
       if [ -n "$DD_VARS" ]; then
-            $ARGS_VARS="--vars-file $DD_VARS"
+            ARGS_VARS="--vars-file $DD_VARS"
       fi
       if [ -n "$DD_SUBDOMAIN" ]; then
-            $ARGS_SUBDOMAIN="-n $DD_SUBDOMAIN"
+            ARGS_SUBDOMAIN="-n $DD_SUBDOMAIN"
       fi
 }
-
 Setup_Args
 
 cf push --no-start "$DD_APPNAME-dark" -f "$DD_MANIFEST" \

@@ -2,7 +2,7 @@
 
 : "${CF_PASSWORD?Cloud Foundry username and password must be set as Environment variables before running this command.}"
 
-curl -v -L -o cf-cli_amd64.deb ''https://cli.run.pivotal.io/stable?release=debian64&source=github''
+curl -v -L -o cf-cli_amd64.deb "https://cli.run.pivotal.io/stable?release=debian64&source=github"
 
 sudo dpkg -i cf-cli_amd64.deb
 
