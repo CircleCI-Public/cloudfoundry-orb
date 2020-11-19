@@ -1,21 +1,17 @@
-# Send "real" url to new version
+Setup_Args() {
+      if [ -n "$LD_SUBDOMAIN" ]; then
+            $ARGS_SUBDOMAIN="-n $LD_SUBDOMAIN"
+}
 
-cf map-route "<<parameters.appname>>-dark" "<<parameters.domain>>" \
-      <<# parameters.live_subdomain>>-n "<<parameters.live_subdomain>>"<</ parameters.live_subdomain>>
+# Send "real" url to new version
+cf map-route "$LD_APPNAME-dark" "$LD_DOMAIN" "$ARGS_SUBDOMAIN"
 
 # Stop sending traffic to previous version
-
-cf unmap-route "<<parameters.appname>>" "<<parameters.domain>>" \
-      <<# parameters.live_subdomain>>-n "<<parameters.live_subdomain>>"<</ parameters.live_subdomain>>
+cf unmap-route "$LD_APPNAME" "$LD_DOMAIN" "$ARGS_SUBDOMAIN"
 
 # stop previous version
-
-cf stop "<<parameters.appname>>"
-
+cf stop "$LD_APPNAME"
 # delete previous version
-
-cf delete "<<parameters.appname>>" -f
-
+cf delete "$LD_APPNAME" -f
 # Switch name of "dark" version to claim correct name
-
-cf rename "<<parameters.appname>>-dark" "<<parameters.appname>>"
+cf rename "$LD_APPNAME-dark" "$LD_APPNAME"

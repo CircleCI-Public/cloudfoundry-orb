@@ -18,3 +18,8 @@ steps:
   - run:
       name: Cloud Foundry Push
       command: <<include(scripts/push.sh)>>
+      environment:
+        DEPLOY_APPNAME: <<parameters.appname>>
+        DEPLOY_MANIFEST: <<parameters.manifest>>
+        DEPLOY_PACKAGE: <<parameters.package>>
+        DEPLOY_VARS: <<parameters.vars>>

@@ -14,3 +14,7 @@ steps:
 - run:
     name: Cloud Foundry - Re-route live Domain
     command: <<include(scripts/live-deploy.sh)>>
+    environment:
+      LD_APPNAME: <<parameters.appname>>
+      LD_DOMAIN: <<parameters.domain>>
+      LD_SUBDOMAIN: <<parameters.live_subdomain>>

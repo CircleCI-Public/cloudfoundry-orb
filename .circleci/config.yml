@@ -23,8 +23,6 @@ workflows:
           dir: ./src/scripts
           exclude: SC2148,SC2001,SC1091,SC2086,SC2116,SC2046,SC2005,SC2002
           shell: sh
-      - bats/run:
-          path: ./test
       - orb-tools/pack:
           use-orb-pack: true
       - hold-for-dev-publish:
@@ -32,7 +30,6 @@ workflows:
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            - bats/run
             - shellcheck/check
       - orb-tools/publish-dev:
           orb-name: circleci/cloudfoundry

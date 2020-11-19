@@ -26,3 +26,10 @@ steps:
 - run:
     name: Cloud Foundry Dark Deployment
     command: <<include(scripts/dark-deploy.sh)>>
+    environment:
+      DD_APPNAME: <<parameters.appname>>
+      DD_SUBDOMAIN: <<parameters.dark_subdomain>>
+      DD_DOMAIN: <<parameters.domain>>
+      DD_MANIFEST: <<parameters.manifest>>
+      DD_PACKAGE: <<parameters.package>>
+      DD_VARS: <<parameters.vars>>

@@ -15,3 +15,7 @@ steps:
 - run:
     name: Setup CF CLI
     command: <<include(scripts/install.sh)>>
+    environment:
+      INSTALL_ENDPOINT: <<parameters.endpoint>>
+      INSTALL_ORG: <<parameters.org>>
+      INSTALL_SPACE: <<parameters.space>>

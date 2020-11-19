@@ -1,11 +1,16 @@
-cf push --no-start "<<parameters.appname>>" -f "<<parameters.manifest>>" \
-      <<#parameters.vars>> --vars-file "<<parameters.vars>>" <</ parameters.vars>> \
-      <<#parameters.package>> -p "<<parameters.package>>" <</ parameters.package>>
+Setup_Args() {
+      if [ -n "$DEPLOY_VARS" ]; then
+            $ARGS_VARS="--vars-file $DD_VARS"
+      if [ -n "$DEPLOY_PACKAGE" ]; then
+            $ARGS_PACKAGE="-n $DEPLOY_PACKAGE"
+}
 
-cf set-env "<<parameters.appname>>" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
-cf set-env "<<parameters.appname>>" CIRCLE_SHA1 "${CIRCLE_SHA1}"
-cf set-env "<<parameters.appname>>" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
-cf set-env "<<parameters.appname>>" CIRCLE_PROJECT_USERNAME "${CIRCLE_PROJECT_USERNAME}"
-cf set-env "<<parameters.appname>>" CIRCLE_PROJECT_REPONAME "${CIRCLE_PROJECT_REPONAME}"
+cf push --no-start "$DEPLOY_APPNAME" -f "$DEPLOY_MANIFEST" "$ARGS_VARS" "$ARGS_PACKAGE"
+
+cf set-env "$DEPLOY_APPNAME" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
+cf set-env "$DEPLOY_APPNAME" CIRCLE_SHA1 "${CIRCLE_SHA1}"
+cf set-env "$DEPLOY_APPNAME" CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID}"
+cf set-env "$DEPLOY_APPNAME" CIRCLE_PROJECT_USERNAME "${CIRCLE_PROJECT_USERNAME}"
+cf set-env "$DEPLOY_APPNAME" CIRCLE_PROJECT_REPONAME "${CIRCLE_PROJECT_REPONAME}"
 #now start
-cf start "<<parameters.appname>>"
+cf start "$DEPLOY_APPNAME"

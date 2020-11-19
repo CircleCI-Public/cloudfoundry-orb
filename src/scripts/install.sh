@@ -7,6 +7,6 @@ curl -v -L -o cf-cli_amd64.deb ''https://cli.run.pivotal.io/stable?release=debia
 sudo dpkg -i cf-cli_amd64.deb
 
 cf -v
-cf api "<<parameters.endpoint>>"
+cf api "$INSTALL_ENDPOINT"
 cf auth "$CF_USERNAME" "$CF_PASSWORD"
-cf target -o "<<parameters.org>>" -s "<<parameters.space>>"
+cf target -o "$INSTALL_ORG" -s "$INSTALL_SPACE"
