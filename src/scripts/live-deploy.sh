@@ -1,6 +1,7 @@
 Setup_Args() {
       if [ -n "$LD_SUBDOMAIN" ]; then
             $ARGS_SUBDOMAIN="-n $LD_SUBDOMAIN"
+      fi
 }
 
 # Send "real" url to new version

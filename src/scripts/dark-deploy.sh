@@ -1,8 +1,10 @@
 Setup_Args() {
       if [ -n "$DD_VARS" ]; then
             $ARGS_VARS="--vars-file $DD_VARS"
+      fi
       if [ -n "$DD_SUBDOMAIN" ]; then
             $ARGS_SUBDOMAIN="-n $DD_SUBDOMAIN"
+      fi
 }
 
 Setup_Args
