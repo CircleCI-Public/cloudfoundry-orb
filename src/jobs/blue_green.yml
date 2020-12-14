@@ -73,7 +73,8 @@ steps:
       steps:
       - attach_workspace:
           at: <<parameters.workspace_path>>
-  - install:
+  - install
+  - auth:
       endpoint: <<parameters.endpoint>>
       org: <<parameters.org>>
       space: <<parameters.space>>

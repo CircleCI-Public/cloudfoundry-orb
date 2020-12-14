@@ -33,17 +33,13 @@ workflows:
           shell: sh
       - orb-tools/pack:
           use-orb-pack: true
-      - hold-for-dev-publish:
-          type: approval
-          requires:
-            - orb-tools/lint
-            - orb-tools/pack
-            - shellcheck/check
       - orb-tools/publish-dev:
           orb-name: circleci/cloudfoundry
           context: orb-publishing
           requires:
-            - hold-for-dev-publish
+            - orb-tools/lint
+            - orb-tools/pack
+            - shellcheck/check
 
       - orb-tools/trigger-integration-tests-workflow:
           name: trigger-integration-dev
@@ -54,6 +50,7 @@ workflows:
   integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
+      - test_install
       - orb-tools/dev-promote-prod-from-commit-subject:
           orb-name: circleci/cloudfoundry
           context: orb-publishing
@@ -65,3 +62,5 @@ workflows:
           filters:
             branches:
               only: master
+          requires:
+            - test_install

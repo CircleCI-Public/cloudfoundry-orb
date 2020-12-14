@@ -33,7 +33,8 @@ parameters:
     description: Optional steps to run before remapping URLs.
     type: steps
 steps:
-  - install:
+  - install
+  - auth:
       endpoint: <<parameters.endpoint>>
       org: <<parameters.org>>
       space: <<parameters.space>>
