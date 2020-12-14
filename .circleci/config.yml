@@ -28,7 +28,6 @@ jobs:
     steps:
       - run: apk add curl
       - cloudfoundry/install
-      - run: echo "${PATH}\n${BASH_ENV}"
       - run: cf version
 
   test_install-macos:
