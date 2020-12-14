@@ -14,6 +14,14 @@ parameters:
     type: string
     default: "dev:alpha"
 
+jobs:
+  test_install:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - cloudfoundry/install
+
 workflows:
   test-pack:
     unless: << pipeline.parameters.run-integration-tests >>
