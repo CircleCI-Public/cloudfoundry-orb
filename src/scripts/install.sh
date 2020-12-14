@@ -5,6 +5,7 @@ curl -L $BASE_INSTALLER_URL | tar -zx
 if which sudo > /dev/null; then
 	sudo mv cf /usr/local/bin
 else
+	echo "No sudo command, falling back to manual install"
 	mkdir -p $HOME/bin
 	mv cf $HOME/bin
 	echo "export PATH=$PATH:$HOME/bin" >> $BASH_ENV

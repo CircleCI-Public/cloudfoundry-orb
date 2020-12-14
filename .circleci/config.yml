@@ -24,9 +24,9 @@ jobs:
 
   test_install-nosudo:
     docker:
-      - image: alpine:latest
+      - image: cimg/base:stable
     steps:
-      - run: apk add curl
+      - run: export SUDO_FORCE_REMOVE=yes; sudo -E apt purge sudo
       - cloudfoundry/install
       - run: cf version
 
