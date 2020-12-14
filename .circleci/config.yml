@@ -46,7 +46,7 @@ workflows:
       - orb-tools/lint
       - shellcheck/check:
           dir: ./src/scripts
-          exclude: SC2148,SC2001,SC1091,SC2086,SC2116,SC2046,SC2005,SC2002
+          exclude: SC2148,SC2001,SC1091,SC2086,SC2116,SC2046,SC2005,SC2002,SC1090
           shell: sh
       - orb-tools/pack:
           use-orb-pack: true
