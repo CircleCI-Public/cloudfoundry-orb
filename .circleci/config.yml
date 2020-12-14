@@ -20,12 +20,16 @@ jobs:
       - image: cimg/base:stable
     steps:
       - cloudfoundry/install
+      - run: cf version
+
   test_install-nosudo:
     docker:
       - image: alpine:latest
     steps:
       - run: apk add curl
       - cloudfoundry/install
+      - run: cf version
+
   test_install-macos:
     macos:
       xcode: 11.3.0
@@ -33,6 +37,7 @@ jobs:
       - checkout
       - cloudfoundry/install:
           platform: macosx
+      - run: cf version
 
 workflows:
   test-pack:
