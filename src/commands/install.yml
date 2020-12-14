@@ -1,14 +1,15 @@
 description: Installs and authenticates with the latest CLI version if not present.
 parameters:
   platform:
-    default: https://api.run.pivotal.io
-    description: The domain of the Cloud Foundry runtime API endpoint. Defaults to
-      https://api.run.pivotal.io
-    type: string
+    default: linux
+    description: The platform to install CloudFoundry on - macosx, linux or windows.
+    type: enum
+    enum: ["linux", "macosx", "windows"]
   version:
-    description: Cloud Foundry org to target
-    type: string
-    default: 6
+    description:  Version of CloudFoundry CLI to install.
+    type: enum
+    default: "6"
+    enum: ["6", "7"]
 steps:
 - run:
     name: Install cf CLI
