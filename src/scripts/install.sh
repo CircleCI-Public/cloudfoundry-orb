@@ -8,6 +8,7 @@ else
 	mkdir -p $HOME/bin
 	mv cf $HOME/bin
 	echo "export PATH=\"${PATH}:${HOME}/bin\"" >> $BASH_ENV
+	source $BASH_ENV
 fi
 
 cf version
