@@ -24,6 +24,7 @@ jobs:
     docker:
       - image: alpine:latest
     steps:
+      - run: apk add curl
       - cloudfoundry/install
   test_install-macos:
     macos:
