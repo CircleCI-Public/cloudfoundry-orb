@@ -1,9 +1,15 @@
 description: >
   Execute a simple push in a single job. Expects either build_steps or
   workspace_path for assets to deploy.
+
 docker:
-  - image: circleci/node:10
+  - image: << parameters.image >>
+
 parameters:
+  image:
+    description: Docker image in which to run commands.
+    type: string
+    default: cimg/base:latest
   appname:
     description: App Name
     type: string

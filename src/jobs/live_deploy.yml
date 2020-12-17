@@ -1,7 +1,13 @@
 description: Execute final URL remap and application name cleanup.
+
 docker:
-  - image: circleci/node:10
+  - image: << parameters.image >>
+
 parameters:
+  image:
+    description: Docker image in which to run commands.
+    type: string
+    default: cimg/base:latest
   appname:
     description: App Name
     type: string

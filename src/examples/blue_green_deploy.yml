@@ -1,9 +1,11 @@
 description: A blue-green deployment
 
 usage:
+  version: 2.1
+
   orbs:
     cloudfoundry: circleci/cloudfoundry@x.y
-  version: 2.1
+
   workflows:
     build_deploy:
       jobs:
@@ -14,9 +16,7 @@ usage:
               - run: echo 'you can have more, too'
             context: your-context
             domain: your-domain
-            manifest: null
             org: your-org
-            package: null
             space: your-space
             validate_steps:
               - run: echo 'your validation steps'
