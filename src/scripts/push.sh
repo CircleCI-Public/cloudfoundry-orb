@@ -5,10 +5,13 @@ Setup_Args() {
       if [ -n "$DEPLOY_PACKAGE" ]; then
             ARGS_PACKAGE="-n $DEPLOY_PACKAGE"
       fi
+      if [ -n "$DEPLOY_PATH" ]; then
+            ARGS_PATH="-p$DEPLOY_PATH"
+      fi
 }
 Setup_Args
 
-cf push --no-start "$DEPLOY_APPNAME" -f "$DEPLOY_MANIFEST" "$ARGS_VARS" "$ARGS_PACKAGE"
+cf push --no-start "$DEPLOY_APPNAME" -f "$DEPLOY_MANIFEST" "$ARGS_VARS" "$ARGS_PACKAGE" "$ARGS_PATH"
 
 cf set-env "$DEPLOY_APPNAME" CIRCLE_BUILD_NUM "${CIRCLE_BUILD_NUM}"
 cf set-env "$DEPLOY_APPNAME" CIRCLE_SHA1 "${CIRCLE_SHA1}"

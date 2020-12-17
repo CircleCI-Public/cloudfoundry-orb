@@ -5,4 +5,3 @@
 cf api "$INSTALL_ENDPOINT"
 cf auth "$CF_USERNAME" "$CF_PASSWORD"
 cf target -o "$INSTALL_ORG" -s "$INSTALL_SPACE"
-

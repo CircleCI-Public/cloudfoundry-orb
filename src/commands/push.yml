@@ -1,3 +1,5 @@
+description: >
+  Push and stard a Cloud Foundry application.
 parameters:
   appname:
     description: App Name
@@ -14,6 +16,10 @@ parameters:
     default: ''
     description: Vars file for variable substitution.
     type: string
+  path:
+    default: "."
+    description: Directory or zip file containing your application.
+    type: string
 steps:
   - run:
       name: Cloud Foundry Push
@@ -23,3 +29,4 @@ steps:
         DEPLOY_MANIFEST: <<parameters.manifest>>
         DEPLOY_PACKAGE: <<parameters.package>>
         DEPLOY_VARS: <<parameters.vars>>
+        DEPLOY_PATH: <<parameters.path>>
