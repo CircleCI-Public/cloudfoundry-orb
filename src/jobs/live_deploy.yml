@@ -7,7 +7,7 @@ parameters:
   image:
     description: Docker image in which to run commands.
     type: string
-    default: cimg/base:latest
+    default: cimg/base:stable
   appname:
     description: App Name
     type: string
