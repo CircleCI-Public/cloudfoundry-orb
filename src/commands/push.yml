@@ -1,0 +1,32 @@
+description: >
+  Push and stard a Cloud Foundry application.
+parameters:
+  appname:
+    description: App Name
+    type: string
+  manifest:
+    default: ''
+    description: The Cloud Foundry manifest for this environment
+    type: string
+  package:
+    default: ''
+    description: path to the asset/package to push
+    type: string
+  vars:
+    default: ''
+    description: Vars file for variable substitution.
+    type: string
+  path:
+    default: "."
+    description: Directory or zip file containing your application.
+    type: string
+steps:
+  - run:
+      name: Cloud Foundry Push
+      command: <<include(scripts/push.sh)>>
+      environment:
+        DEPLOY_APPNAME: <<parameters.appname>>
+        DEPLOY_MANIFEST: <<parameters.manifest>>
+        DEPLOY_PACKAGE: <<parameters.package>>
+        DEPLOY_VARS: <<parameters.vars>>
+        DEPLOY_PATH: <<parameters.path>>

@@ -1,0 +1,23 @@
+description: A blue-green deployment
+
+usage:
+  version: 2.1
+
+  orbs:
+    cloudfoundry: circleci/cloudfoundry@x.y
+
+  workflows:
+    build_deploy:
+      jobs:
+        - cloudfoundry/blue_green:
+            appname: your-app
+            build_steps:
+              - run: echo 'your build steps'
+              - run: echo 'you can have more, too'
+            context: your-context
+            domain: your-domain
+            org: your-org
+            space: your-space
+            validate_steps:
+              - run: echo 'your validation steps'
+              - run: echo 'you can also have more of these'

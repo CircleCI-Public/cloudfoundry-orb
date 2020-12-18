@@ -1,0 +1,19 @@
+description: Installs and authenticates with the latest CLI version if not present.
+parameters:
+  platform:
+    default: linux
+    description: The platform to install CloudFoundry on - macosx, linux or windows.
+    type: enum
+    enum: ["linux", "macosx", "windows"]
+  version:
+    description:  Version of CloudFoundry CLI to install.
+    type: enum
+    default: "6"
+    enum: ["6", "7"]
+steps:
+- run:
+    name: Install cf CLI
+    command: <<include(scripts/install.sh)>>
+    environment:
+      CLOUDFOUNDRY_BINARY_PLATFORM: <<parameters.platform>>
+      CLOUDFOUNDRY_BINARY_VERSION: <<parameters.version>>
